@@ -1,157 +1,154 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Vue Contatos</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
-</head>
-<body>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+  </head>
+  <body>
     <div class="container" id="app">
-
         <div class="row mt-5">
             <div class="col-12 border-bottom mb-5 d-flex justify-content-between align-items-center">
-                <h2 :title="ex">{{name}}</h2>
+                <h2>{{name}}</h2>
                 <p>{{contactsCount}}</p>
             </div>
-
+            <div class="alert alert-success" role="alert" v-if="success">
+                Salvo com sucesso!
+            </div>
             <div class="col-4">
-
                 <form action="">
-
                     <div class="form-group mr-1">
                         <label>Nome</label>
                         <input type="text" class="form-control" placeholder="Nome Completo..." v-model="contact.name">
                     </div>
-
-
                     <div class="form-group mr-1">
                         <label>E-mail</label>
                         <input type="email" class="form-control" placeholder="Seu melhor email..." v-model="contact.email">
                     </div>
-
                     <div class="form-group mr-1">
                         <label>Contato</label>
                         <input type="phone" class="form-control" placeholder="Telefone/Celular" v-model="contact.phone">
                     </div>
-
+                    <br/>
                     <div class="form-group ml-1">
                         <button v-if="!isEdit" class="btn btn-lg btn-rounded btn-success" @click.prevent="saveContact(contact)">Criar Contato</button>
                         <button v-if="isEdit" class="btn btn-lg btn-rounded btn-primary" @click.prevent="updateContact(contact)">Atualizar Contato</button>
                     </div>
                 </form>
             </div>
-
             <div class="col-8 border-left">
-                
                 <div class="contact" v-if="contacts.length">
-                        
                     <div class="col-12 mb-2" v-for="contact in contacts">
-
                         <div class="card">
                             <div class="card-body">
                                 <h5 class="card-title">{{contact.name}}</h5>
-
                                 <p class="card-text">{{contact.email}}, {{contact.phone}}</p>
-
                                 <a href="#" class="btn btn-sm btn-primary" @click.prevent="editContact(contact)">EDITAR</a>
                                 <a href="#" class="btn btn-sm btn-danger" @click.prevent="removeContact(contact.id)">DELETAR</a>
                             </div>
-
                         </div>
                     </div>
-
                 </div>
-                <div v-else>Nenhum contato encontrado!</div>
+                <div v-else>
+                    <p>Nenhum contato encontrado!</p>
+                </div>
             </div>
         </div>
     </div>
-    
+
+    <!-- Optional JavaScript; choose one of the two! -->
+
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+
+    <!-- Option 2: Separate Popper and Bootstrap JS -->
+    <!--
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.6.0/dist/umd/popper.min.js" integrity="sha384-KsvD1yqQ1/1+IA7gi3P0tyJcT3vR+NdBTt13hSJ2lnve8agRGXTTyNaBYmCR/Nwi" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.min.js" integrity="sha384-nsg8ua9HAw1y0W1btsyWgBklPnCUAFLuTMS2G72MMONqmOymq585AcH49TLBQObG" crossorigin="anonymous"></script>
+    -->
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
     <script>
-        let app = new Vue({
-            el: "#app",
+        var app = new Vue({
+            el: '#app',
             data: {
                 contacts: [],
                 name: 'Contatos App',
                 contact: {
-                    id: '',
-                    name: '',
-                    email: '',
-                    phone: ''
+                    id: "",
+                    email: "",
+                    name: "",
+                    phone: ""
                 },
                 isEdit: false,
-                ex: 'Meu app de contatos'
+                success: false
             }, 
             computed: {
-                contactsCount() {
-                    return `Total de contatos é ${this.contacts.length}`;
+                contactsCount(){
+                  return `Total de contatos é ${this.contacts.length}` 
                 }
             },
-            created() {
-                this.contacts = JSON.parse(localStorage.getItem('contactsApp'));
+            created(){
+                this.contacts = JSON.parse(localStorage.getItem('contacts'))
             },
             methods: {
+                cleanForm() {
+                    this.contact = {id: "", email: "", name: "", phone: ""}
+                },
                 saveContact(contact) {
-
-                    let contacts = localStorage.getItem('contactsApp');
-
-                    contact.id = new Date().getTime();
-
-                    if(contacts) {
-                        
-                        contacts = JSON.parse(contacts);
-                        contacts.push(contact);
-
-                    } else {
+                    let contacts = localStorage.getItem('contacts');
+                    let storageid = localStorage.getItem('id');
+                    if (storageid){
+                        this.contact.id = parseInt(storageid) + parseInt(1)
+                        storageid = this.contact.id
+                    }else{
+                        storageid = parseInt(1)
+                        this.contact.id = storageid
+                    }
+                    localStorage.setItem('id', storageid)
+                    if (contacts){
+                        contacts = JSON.parse(contacts)
+                        contacts.push(contact)
+                    }else{
                         contacts = [contact];
                     }
-
-                    this.contacts = contacts;
-
-                    // o atualizar local storage independemente de novo contato ou nova adição   
-                    localStorage.setItem('contactsApp', JSON.stringify(contacts));
-
-                    location.reload();
+                    localStorage.setItem('contacts', JSON.stringify(contacts))
+                    this.contacts = contacts
+                    this.success = true
+                    this.cleanForm()
                 },
-                removeContact(contactId) {
-                    let contacts = localStorage.getItem('contactsApp');
-
+                removeContact(id) {
+                    let contacts = localStorage.getItem('contacts');
                     if(!contacts) return;
-
-                    contacts = JSON.parse(contacts);
-
-                    contacts = contacts.filter((contact) => {
-                        return contact.id != contactId;
-                    });
-
-                    this.contacts = contacts;
-
-                    localStorage.setItem('contactsApp', JSON.stringify(contacts));
+                    contacts = JSON.parse(contacts)
+                    contacts = contacts.filter((contact) => {return contact.id != id})
+                    localStorage.setItem('contacts', JSON.stringify(contacts))
+                    this.contacts = contacts
+                    success = true
                 },
                 editContact(contact) {
-                    this.contact = contact;
-                    this.isEdit = true;
+                    this.success = false
+                    this.contact = contact
+                    this.isEdit = true
                 },
                 updateContact(contact) {
                     let contacts = this.contacts.map(contactMap => {
-                        if(contactMap.id == contact.id) {
-                            return contact;
+                        if(contactMap.id == contact.id){
+                            return contact
                         }
-
-                        return contactMap;
-                    });
-
-                    this.contacts = contacts;
-                    this.isEdit = false;
-
-                    localStorage.setItem('contactsApp', JSON.stringify(contacts));
-
-                    location.reload();
-   
+                        return contactMap
+                    })
+                    localStorage.setItem('contacts', JSON.stringify(contacts))
+                    this.contacts = contacts
+                    this.isEdit = false
+                    this.cleanForm()
+                    this.success = true
                 }
             }
-        });
+        })
     </script>
-</body>
+  </body>
 </html>
