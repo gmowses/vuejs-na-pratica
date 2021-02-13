@@ -40,7 +40,7 @@
                 </form>
             </div>
             <div class="col-8 border-left">
-                <div class="contact" v-if="contacts.length">
+                <div class="contact" v-if="length">
                     <div class="col-12 mb-2" v-for="contact in contacts">
                         <div class="card">
                             <div class="card-body">
@@ -75,6 +75,7 @@
         var app = new Vue({
             el: '#app',
             data: {
+                length: 0,
                 contacts: [],
                 name: 'Contatos App',
                 contact: {
@@ -88,7 +89,7 @@
             }, 
             computed: {
                 contactsCount(){
-                  return `Total de contatos é ${this.contacts.length}` 
+                  return `Total de contatos é ${this.length}` 
                 }
             },
             created(){
@@ -119,6 +120,7 @@
                     this.contacts = contacts
                     this.success = true
                     this.cleanForm()
+                    this.length = this.contacts.length
                 },
                 removeContact(id) {
                     let contacts = localStorage.getItem('contacts');
@@ -128,6 +130,7 @@
                     localStorage.setItem('contacts', JSON.stringify(contacts))
                     this.contacts = contacts
                     success = true
+                    this.length = this.contacts.length
                 },
                 editContact(contact) {
                     this.success = false
@@ -146,6 +149,7 @@
                     this.isEdit = false
                     this.cleanForm()
                     this.success = true
+                    this.length = this.contacts.length
                 }
             }
         })
