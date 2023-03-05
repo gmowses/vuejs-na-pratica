@@ -23,7 +23,12 @@ jobs:
 
       - name: Add host key
         run: ssh-keyscan -p 2222 181.191.104.4 >> ~/.ssh/known_hosts
-
+      
+      - name: Set up SSH key
+        uses: webfactory/ssh-agent@v0.5.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+        
       - name: Deploy to Server
         run: |
           ssh -p 2222 root@181.191.104.4  "bash -s" < ./deploy.sh
