@@ -14,7 +14,7 @@ jobs:
         uses: webfactory/ssh-agent@v0.5.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-          ssh-host: 181.191.104.1
+          ssh-host: 181.191.104.4
           ssh-username: t2web
       - name: Deploy code to production
-        run: ssh -o "StrictHostKeyChecking no" t2web@181.191.104.1 "cd /opt/testerepo && git pull origin master && exit"
+        run: ssh -o "StrictHostKeyChecking no" t2web@181.191.104.4 "cd /opt/testerepo && git pull origin master && exit"
