@@ -26,7 +26,9 @@ jobs:
 
       - name: Add host key
         run: ssh-keyscan -p 2222 181.191.104.4 >> ~/.ssh/known_hosts
-      
-      - name: Deploy to Server
-        run: |
-          ssh -p 2222 -i ~/.ssh/id_rsa root@181.191.104.4 "bash -s" < ./deploy.sh
+        
+      - name: Test SSH connection
+        run: ssh -T -p 2222 root@181.191.104.4
+
+      - name: Deploy code to server
+        run: ssh -p 2222 -i ~/.ssh/id_rsa root@181.191.104.4 -v "bash -s" < ./deploy.sh
