@@ -17,7 +17,9 @@ jobs:
 
       - name: Install ssh
         run: sudo apt-get install openssh-client
-
+        
+      - name: Create known_hosts file
+        run: mkdir -p ~/.ssh && touch ~/.ssh/known_hosts
 
       - name: Add host key
         run: ssh-keyscan -p 2222 181.191.104.4 >> ~/.ssh/known_hosts
