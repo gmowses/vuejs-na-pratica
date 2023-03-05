@@ -1,4 +1,4 @@
-name: Deploy to Server-2
+name: Deploy to Server-3
 on:
   push:
     branches:
@@ -13,22 +13,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-
-      - name: Install ssh
-        run: sudo apt-get install openssh-client
-        
-      - name: Copy SSH key
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-
-      - name: Add host key
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Install SSH client
+        run: sudo apt-get install openssh-client -y
+      
+      - name: Create known_hosts file
+        run: mkdir -p ~/.ssh && touch ~/.ssh/known_hosts
+      
+      - name: Add host key to known_hosts
         run: ssh-keyscan -p 2222 181.191.104.4 >> ~/.ssh/known_hosts
+      
+      - name: Set up SSH key
+        uses: webfactory/ssh-agent@v0.5.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
         
       - name: Test SSH connection
         run: ssh -T -p 2222 root@181.191.104.4
 
       - name: Deploy code to server
-        run: ssh -p 2222 -i ~/.ssh/id_rsa root@181.191.104.4 -v "bash -s" < ./deploy.sh
+        run: ssh -p 2222 -i ~/.ssh/id_rsa root@181.191.104.4 "bash -s" < ./deploy.sh
