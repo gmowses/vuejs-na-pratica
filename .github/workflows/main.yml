@@ -1,31 +1,21 @@
-name: Deploy to Server-3
+name: Deploy to Server
 on:
   push:
     branches:
-      - master
-  pull_request:
-    branches:
-      - master
-
-
+      - main
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      
-      - name: install ssh keys
-      # check this thread to understand why its needed:
-      # https://stackoverflow.com/a/70447517
-        run: |
-          install -m 600 -D /dev/null ~/.ssh/id_rsa
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          ssh-keyscan -p 2222 181.191.104.4 >> ~/.ssh/known_hosts 
-        
-      - name: Test SSH connection
-        run: ssh -T -p 2222 root@181.191.104.4
-
-      - name: Deploy code to server
-        run: ssh -p 2222 root@181.191.104.4 "bash -s" < ./deploy.sh
+      - name: SSH Deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: 181.191.104.4
+          port: 2222
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /app
+            ./deploy.ssh
