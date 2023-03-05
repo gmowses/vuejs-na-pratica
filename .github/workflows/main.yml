@@ -18,6 +18,10 @@ jobs:
       - name: Install ssh
         run: sudo apt-get install openssh-client
 
+
+      - name: Add host key
+        run: ssh-keyscan -p 2222 181.191.104.4 >> ~/.ssh/known_hosts
+
       - name: Deploy to Server
         run: |
           ssh -p 2222 root@181.191.104.4  "bash -s" < ./deploy.sh
