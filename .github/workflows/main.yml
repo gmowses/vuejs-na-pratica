@@ -13,13 +13,22 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: SSH Deploy
+
+      - name: Install SSH Key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          known_hosts: unnecessary
+          
+      - name: Add host key to known_hosts
+        run: ssh-keyscan -p 2222 181.191.104.4 >> ~/.ssh/known_hosts
+        
+      - name: SSh Deploy
         uses: appleboy/ssh-action@master
         with:
           host: 181.191.104.4
-          port: 2222
           username: root
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 2222
           script: |
-            cd /app
-            ./deploy.ssh
+            ./app/deploy.sh
