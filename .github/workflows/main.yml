@@ -24,4 +24,4 @@ jobs:
         run: ssh-keyscan -p 2222 181.191.104.4 >> ~/.ssh/known_hosts
         
       - name: Deploy code to server
-        run: ssh -p 2222 -i root@181.191.104.4 "bash -s" < ./deploy.sh
+        run: ssh -p 2222 root@181.191.104.4 "bash -s" < ./deploy.sh
