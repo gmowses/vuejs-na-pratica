@@ -32,5 +32,4 @@ jobs:
           port: 2222
           script: |
             cd /app
-            chmod +x deploy.sh
             ./deploy.sh
