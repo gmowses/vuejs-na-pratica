@@ -31,4 +31,4 @@ jobs:
         
       - name: Deploy to Server
         run: |
-          ssh -p 2222 root@181.191.104.4  "bash -s" < ./deploy.sh
+          ssh -p 2222 root@181.191.104.4 "bash deploy.sh"
