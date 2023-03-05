@@ -31,4 +31,4 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 2222
           script: |
-            ./app/deploy.sh
+            ./deploy.sh
