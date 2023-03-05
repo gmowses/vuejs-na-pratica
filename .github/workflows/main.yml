@@ -31,4 +31,6 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 2222
           script: |
-            git pull
+            cd /app
+            chmod +x deploy.sh
+            ./deploy.sh
