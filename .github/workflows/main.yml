@@ -1,20 +1,22 @@
-name: Deploy to Production
+name: Deploy to Server
+
 on:
   push:
     branches:
-      - master
+      - main
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Install dependencies
-      - name: SSH into production server
-        uses: webfactory/ssh-agent@v0.5.0
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-          ssh-host: 181.191.104.4
-          ssh-username: t2web
-      - name: Deploy code to production
-        run: ssh -o "StrictHostKeyChecking no" t2web@181.191.104.4 "cd /opt/testerepo && git pull origin master && exit"
+      - uses: actions/checkout@v2
+
+      - name: Install ssh
+        run: sudo apt-get install openssh-client
+
+      - name: Deploy to Server
+        run: |
+          ssh -p 2222 root@181.191.104.4  "cd /app && bash -s" < ./deploy.sh
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
